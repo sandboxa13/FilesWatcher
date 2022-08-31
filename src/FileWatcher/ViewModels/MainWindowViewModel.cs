@@ -7,6 +7,7 @@ using FileWatcher.ViewModels.Commands;
 using FileWatcher.Domain;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive.Disposables;
 
 namespace FileWatcher.ViewModels
 {
@@ -14,6 +15,7 @@ namespace FileWatcher.ViewModels
     {
         private readonly PermissionsElevator _permissionsElevator;
         private readonly FilesWatcher _filesWatcher;
+        private readonly CompositeDisposable _disposables = new CompositeDisposable();
 
         private string _currentPath;
         private bool _isAdmin;
@@ -32,7 +34,7 @@ namespace FileWatcher.ViewModels
 
             IsAdmin = permissionsChecker.IsAdmin;
 
-            _filesWatcher.FilesChanged.Subscribe(OnFilesChanged);
+            _disposables.Add(_filesWatcher.FilesChanged.Subscribe(OnFilesChanged));
         }
 
         public ICommand OpenFolderSelectWindowCommand { get; set; }
@@ -85,6 +87,7 @@ namespace FileWatcher.ViewModels
         public override void Dispose()
         {
             _filesWatcher.Dispose();
+            _disposables.Dispose();
         }
 
         private void OnFilesChanged(File[] files)
