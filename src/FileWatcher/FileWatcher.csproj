@@ -7,15 +7,21 @@
     <UseWPF>true</UseWPF>
 	<UseWindowsForms>true</UseWindowsForms>
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-	<BaseOutputPath></BaseOutputPath>
+	<BaseOutputPath>$(SolutionDir)bin\</BaseOutputPath>
+	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	<ApplicationIcon>Resources\icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Reactive" Version="5.0.0" />
+    <None Remove="Resources\icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FileWatcherDll\FileWatcherDll.vcxproj" />
+    <Content Include="Resources\icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,13 +33,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="FileWatcherDll.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\icon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

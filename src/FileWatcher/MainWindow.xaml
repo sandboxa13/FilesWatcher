@@ -6,10 +6,16 @@
         xmlns:viewmodels="clr-namespace:FileWatcher.ViewModels"
         mc:Ignorable="d"
         Closing="Window_Closing"
+        StateChanged="Window_StateChanged"
         d:DataContext="{d:DesignInstance viewmodels:MainWindowViewModel}" 
         Title="File Watcher" MinHeight="450" MinWidth="800" Height="450" Width="800">
-
     <Window.Resources>
+        <ContextMenu x:Key="NotifierContextMenu"
+                     Placement="MousePoint">
+            <MenuItem Header="Show" Click="Menu_Show"/>
+            <MenuItem Header="Close" Click="Menu_Close"/>
+        </ContextMenu>
+
         <Style TargetType="{x:Type TextBlock}" x:Key="TextBlock.CurrentPath.Style" >
             <Setter Property="MinWidth" Value="200"/>
             <Setter Property="Width" Value="Auto"/>
