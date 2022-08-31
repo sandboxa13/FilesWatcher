@@ -1,0 +1,90 @@
+﻿<Window x:Class="FileWatcher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:viewmodels="clr-namespace:FileWatcher.ViewModels"
+        mc:Ignorable="d"
+        Closing="Window_Closing"
+        d:DataContext="{d:DesignInstance viewmodels:MainWindowViewModel}" 
+        Title="File Watcher" MinHeight="450" MinWidth="800" Height="450" Width="800">
+
+    <Window.Resources>
+        <Style TargetType="{x:Type TextBlock}" x:Key="TextBlock.CurrentPath.Style" >
+            <Setter Property="MinWidth" Value="200"/>
+            <Setter Property="Width" Value="Auto"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Text" Value="{Binding CurrentPath}"/>
+        </Style>
+
+        <Style TargetType="{x:Type Button}" x:Key="Button.OpenFolder.Style" >
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Content" Value="Open"/>
+            <Setter Property="Command" Value="{Binding OpenFolderSelectWindowCommand}"/>
+        </Style>
+
+        <Style TargetType="{x:Type Button}" x:Key="Button.RunAsAdmin.Style" >
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Content" Value="Run as admin"/>
+            <Setter Property="Command" Value="{Binding RunAsAdminCommand}"/>
+        </Style>
+
+        <Style TargetType="{x:Type Border}" x:Key="Border.Separator.Style" >
+            <Setter Property="BorderThickness" Value="0, 0, 0, 1"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+        </Style>
+
+        <Style TargetType="{x:Type Border}" x:Key="Border.CurrentPath.Style" >
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+            <Setter Property="Height" Value="Auto"/>
+        </Style>
+
+        <Style x:Key="ListView.Files.Style" TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+        </Style>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Folder select and Run As Admin-->
+        <Grid Grid.Row="0" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal" >
+                <Border Style="{StaticResource Border.CurrentPath.Style}">
+                    <TextBlock Style="{StaticResource TextBlock.CurrentPath.Style}"/>
+                </Border>
+                <Button Style="{StaticResource Button.OpenFolder.Style}" />
+            </StackPanel>
+
+            <Button Grid.Column="1" Style="{StaticResource Button.RunAsAdmin.Style}"/>
+        </Grid>
+
+        <Border Grid.Column="1" Style="{StaticResource Border.Separator.Style}"/>
+
+        <!-- Files-->
+        <Grid Grid.Row="2">
+            <ListView Margin="10" ItemsSource="{Binding Files}" HorizontalAlignment="Left" HorizontalContentAlignment="Left">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn HeaderContainerStyle="{StaticResource ListView.Files.Style}" Header="Name" Width="Auto" DisplayMemberBinding="{Binding Name}" />
+                        <GridViewColumn HeaderContainerStyle="{StaticResource ListView.Files.Style}" Header="Path" Width="Auto" DisplayMemberBinding="{Binding Path}" />
+                        <GridViewColumn HeaderContainerStyle="{StaticResource ListView.Files.Style}" Header="Size" Width="Auto" DisplayMemberBinding="{Binding Size}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+    </Grid>
+</Window>
