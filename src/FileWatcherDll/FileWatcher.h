@@ -10,29 +10,11 @@ namespace filewatcherdll
 		file_watcher(ui_callback callback, wchar_t* path)
 			: m_ui_callback(callback)
 		{
-			for (const auto& entry : std::filesystem::directory_iterator(path))
-			{
-				file file {};
+			int pathLen = std::wcslen(path);
+			m_path = new wchar_t[pathLen + 1];
+			wcsncpy_s(m_path, pathLen + 1, path, pathLen);
 
-				auto fileName = entry.path().filename().string();
-				auto path = entry.path().string();
-				
-				int fileNameLen = std::strlen(fileName.c_str());
-				int pathLen = std::strlen(path.c_str());
-
-				file.name = new char[fileNameLen + 1];
-				file.path = new char[pathLen + 1];
-
-				strncpy_s(file.name, fileNameLen + 1, fileName.c_str(), fileNameLen);
-				strncpy_s(file.path, pathLen + 1, path.c_str(), pathLen);
-
-				file.is_directory = entry.is_directory();
-				file.size = entry.file_size();
-
-				files.push_back(file);
-			}
-
-			callback(&files.front(), files.size());
+			timer_start();
 		}
 
 		~file_watcher()
@@ -40,8 +22,16 @@ namespace filewatcherdll
 			files.clear();
 		}
 
+		void threadFunction();
+		void timer_start();
+		void check_files();
+
 	private:
 		ui_callback m_ui_callback;
 		std::vector<file> files {};
+		wchar_t* m_path;
+		std::thread m_timer_thread;
+		std::promise<void> exitSignal;
+		std::future<void> futureObj;
 	};
 }

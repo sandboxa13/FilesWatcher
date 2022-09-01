@@ -57,7 +57,7 @@ namespace FileWatcher
             this.Show();
         }
 
-        private void Menu_Close(object sender, RoutedEventArgs e)
+        private void Menu_Exit(object sender, RoutedEventArgs e)
         {
             notifier.MouseDown -= Notifier_MouseDown;
 

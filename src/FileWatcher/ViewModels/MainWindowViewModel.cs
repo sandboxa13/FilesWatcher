@@ -8,6 +8,7 @@ using FileWatcher.Domain;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Disposables;
+using System.Windows;
 
 namespace FileWatcher.ViewModels
 {
@@ -92,9 +93,12 @@ namespace FileWatcher.ViewModels
 
         private void OnFilesChanged(File[] files)
         {
-            Files.Clear();
+            System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                Files.Clear();
 
-            Files = new ObservableCollection<FileViewModel>(files.Select(file => new FileViewModel(file)));
+                Files = new ObservableCollection<FileViewModel>(files.Select(file => new FileViewModel(file)));
+            }));
         }
 
         private void OpenFolderSelectWindowHandler()

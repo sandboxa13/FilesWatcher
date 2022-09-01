@@ -13,7 +13,7 @@
         <ContextMenu x:Key="NotifierContextMenu"
                      Placement="MousePoint">
             <MenuItem Header="Show" Click="Menu_Show"/>
-            <MenuItem Header="Close" Click="Menu_Close"/>
+            <MenuItem Header="Exit" Click="Menu_Exit"/>
         </ContextMenu>
 
         <Style TargetType="{x:Type TextBlock}" x:Key="TextBlock.CurrentPath.Style" >

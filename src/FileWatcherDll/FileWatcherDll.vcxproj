@@ -28,6 +28,7 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="FileWatcher.cpp" />
+    <ClCompile Include="IFileWatcher.cpp" />
     <ClCompile Include="permissions\PermissionsChecker.cpp" />
     <ClCompile Include="permissions\PermissionsElevator.cpp" />
   </ItemGroup>

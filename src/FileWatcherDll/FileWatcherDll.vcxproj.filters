@@ -44,5 +44,8 @@
     <ClCompile Include="permissions\PermissionsElevator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="IFileWatcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
