@@ -91,7 +91,7 @@ namespace FileWatcher.ViewModels
             _disposables.Dispose();
         }
 
-        private void OnFilesChanged(File[] files)
+        private void OnFilesChanged(FileModel[] files)
         {
             System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {

@@ -3,9 +3,9 @@
 namespace FileWatcher.Domain
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    internal struct File
+    internal struct FileModel
     {
-        public File(string name,
+        public FileModel(string name,
                     string path,
                     string lastWriteTime,
                     int size,

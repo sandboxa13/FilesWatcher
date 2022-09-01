@@ -8,9 +8,9 @@ namespace FileWatcher.Logic
 {
     internal class FilesWatcher
     {
-        private readonly ISubject<File[]> _filesChangedSubject = new Subject<File[]>();
+        private readonly ISubject<FileModel[]> _filesChangedSubject = new Subject<FileModel[]>();
 
-        private File[] _files;
+        private FileModel[] _files;
         private IntPtr _fileWatcher;
         private GuiUpdateDelegate _guiUpdateCallback;
 
@@ -20,7 +20,7 @@ namespace FileWatcher.Logic
         }
 
         public string CurrentPath { get; private set; }
-        public IObservable<File[]> FilesChanged => _filesChangedSubject;
+        public IObservable<FileModel[]> FilesChanged => _filesChangedSubject;
 
         public void Dispose()
         {
@@ -47,10 +47,10 @@ namespace FileWatcher.Logic
                 return;
 
             if (_files == null || _files.Length != count)
-                _files = new File[count];
+                _files = new FileModel[count];
 
             for (int i = 0; i < count; i++)
-                _files[i] = (File)Marshal.PtrToStructure(files + i * Marshal.SizeOf<File>(), typeof(File));
+                _files[i] = (FileModel)Marshal.PtrToStructure(files + i * Marshal.SizeOf<FileModel>(), typeof(FileModel));
 
             _filesChangedSubject.OnNext(_files);
         }

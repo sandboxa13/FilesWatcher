@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-        xmlns:viewmodels="clr-namespace:FileWatcher.ViewModels"
+        xmlns:viewmodels="clr-namespace:FileWatcher.ViewModels" 
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Closing="Window_Closing"
         StateChanged="Window_StateChanged"
@@ -52,6 +53,14 @@
         <Style x:Key="ListView.Files.Style" TargetType="{x:Type GridViewColumnHeader}">
             <Setter Property="HorizontalContentAlignment" Value="Left" />
         </Style>
+
+        <DataTemplate x:Key="GridViewCellTemplateStyle">
+            <TextBlock Text="{Binding}">
+                <TextBlock.InputBindings>
+                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding DoubleClickCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"/>
+                </TextBlock.InputBindings>
+            </TextBlock>
+        </DataTemplate>
     </Window.Resources>
     
     <Grid>
@@ -82,13 +91,37 @@
 
         <!-- Files-->
         <Grid Grid.Row="2">
-            <ListView Margin="10" ItemsSource="{Binding Files}" HorizontalAlignment="Left" HorizontalContentAlignment="Left">
+            <ListView VirtualizingPanel.IsVirtualizing="True" Margin="10" ItemsSource="{Binding Files}" HorizontalAlignment="Left" HorizontalContentAlignment="Left">
                 <ListView.View>
-                    <GridView>
-                        <GridViewColumn HeaderContainerStyle="{StaticResource ListView.Files.Style}" Header="Name" Width="Auto" DisplayMemberBinding="{Binding Name}" />
+                    <GridView >
+                        <!--<GridViewColumn Width="Auto" Header="Name" CellTemplate="{StaticResource GridViewCellTemplateStyle}"/>-->
+
+                        <GridViewColumn Header="Name" Width="auto"  >
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}">
+                                        <TextBlock.InputBindings>
+                                            <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DoubleClickCommand}" />
+                                        </TextBlock.InputBindings>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <!--<GridViewColumn Header="Name" Width="Auto" >
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}">
+                                        <TextBlock.InputBindings>
+                                            <MouseBinding Gesture="LeftDoubleClick" Command="{Binding DoubleClickCommand}"/>
+                                        </TextBlock.InputBindings>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
                         <GridViewColumn HeaderContainerStyle="{StaticResource ListView.Files.Style}" Header="Path" Width="Auto" DisplayMemberBinding="{Binding Path}" />
                         <GridViewColumn HeaderContainerStyle="{StaticResource ListView.Files.Style}" Header="Size" Width="Auto" DisplayMemberBinding="{Binding Size}" />
-                        <GridViewColumn HeaderContainerStyle="{StaticResource ListView.Files.Style}" Header="Time" Width="Auto" DisplayMemberBinding="{Binding LastWriteTime}" />
+                        <GridViewColumn HeaderContainerStyle="{StaticResource ListView.Files.Style}" Header="Last change" Width="Auto" DisplayMemberBinding="{Binding LastWriteTime}" />-->
                     </GridView>
                 </ListView.View>
             </ListView>
