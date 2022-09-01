@@ -88,6 +88,7 @@
                         <GridViewColumn HeaderContainerStyle="{StaticResource ListView.Files.Style}" Header="Name" Width="Auto" DisplayMemberBinding="{Binding Name}" />
                         <GridViewColumn HeaderContainerStyle="{StaticResource ListView.Files.Style}" Header="Path" Width="Auto" DisplayMemberBinding="{Binding Path}" />
                         <GridViewColumn HeaderContainerStyle="{StaticResource ListView.Files.Style}" Header="Size" Width="Auto" DisplayMemberBinding="{Binding Size}" />
+                        <GridViewColumn HeaderContainerStyle="{StaticResource ListView.Files.Style}" Header="Time" Width="Auto" DisplayMemberBinding="{Binding LastWriteTime}" />
                     </GridView>
                 </ListView.View>
             </ListView>

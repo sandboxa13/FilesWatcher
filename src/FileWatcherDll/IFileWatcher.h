@@ -6,6 +6,7 @@
 #include <functional>
 #include <thread>
 #include <future>
+#include <sstream> 
 
 namespace filewatcherdll
 {

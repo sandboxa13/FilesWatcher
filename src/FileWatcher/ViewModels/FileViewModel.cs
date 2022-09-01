@@ -28,6 +28,10 @@ namespace FileWatcher.ViewModels
         {
             get
             {
+                if (_file.IsDirectory)
+                {
+                    return 0;
+                }
                 return _file.Size;
             }
         }
@@ -36,6 +40,14 @@ namespace FileWatcher.ViewModels
             get
             {
                 return _file.Path;
+            }
+        }
+
+        public string LastWriteTime
+        {
+            get
+            {
+                return _file.LastWriteTime;
             }
         }
 

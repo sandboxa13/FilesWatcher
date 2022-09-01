@@ -7,6 +7,7 @@ namespace filewatcherdll
 	{
 		char* name;
 		char* path;
+		char* last_write;
 		int size;
 		bool is_directory;
 	};

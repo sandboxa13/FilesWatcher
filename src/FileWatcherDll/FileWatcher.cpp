@@ -14,6 +14,16 @@ namespace filewatcherdll
 		delete ptr;
 	}
 
+	template <typename TP>
+	std::time_t to_time_t(TP tp)
+	{
+		using namespace std::chrono;
+		auto sctp = time_point_cast<system_clock::duration>(tp - TP::clock::now()
+			+ system_clock::now());
+		return system_clock::to_time_t(sctp);
+	}
+
+
 	void file_watcher::stop() 
 	{
 		m_running = false;
@@ -58,6 +68,16 @@ namespace filewatcherdll
 
 			file.is_directory = entry.is_directory();
 			file.size = entry.file_size();
+
+			std::time_t tt = to_time_t(entry.last_write_time());
+			std::tm* gmt = std::gmtime(&tt);
+			std::stringstream buffer{};
+			buffer << std::put_time(gmt, "%d %B %Y %H:%M");
+			std::string formattedFileTime = buffer.str();
+
+			int lastWriteLen = std::strlen(formattedFileTime.c_str());
+			file.last_write = new char[lastWriteLen + 1];
+			strncpy_s(file.last_write, lastWriteLen + 1, formattedFileTime.c_str(), lastWriteLen);
 
 			files.push_back(file);
 		}
