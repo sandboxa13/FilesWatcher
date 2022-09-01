@@ -9,12 +9,20 @@ namespace filewatcherdll
 
 	void dispose_file_watcher(IFileWatcher* ptr)
 	{
+		ptr->stop();
+
 		delete ptr;
+	}
+
+	void file_watcher::stop() 
+	{
+		m_running = false;
+		m_timer_thread.join();
 	}
 
 	void file_watcher::threadFunction()
 	{
-		while (futureObj.wait_for(std::chrono::milliseconds(1)) == std::future_status::timeout)
+		while (m_running)
 		{
 			auto x = std::chrono::steady_clock::now() + std::chrono::milliseconds(1000);
 			check_files();
@@ -24,7 +32,7 @@ namespace filewatcherdll
 
 	void file_watcher::timer_start()
 	{
-		futureObj = exitSignal.get_future();
+		m_running = true;
 		m_timer_thread = std::thread(&file_watcher::threadFunction,this);
 	}
 

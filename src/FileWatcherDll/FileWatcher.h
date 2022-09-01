@@ -25,6 +25,7 @@ namespace filewatcherdll
 		void threadFunction();
 		void timer_start();
 		void check_files();
+		void stop(void);
 
 	private:
 		ui_callback m_ui_callback;
@@ -33,5 +34,6 @@ namespace filewatcherdll
 		std::thread m_timer_thread;
 		std::promise<void> exitSignal;
 		std::future<void> futureObj;
+		bool m_running;
 	};
 }
