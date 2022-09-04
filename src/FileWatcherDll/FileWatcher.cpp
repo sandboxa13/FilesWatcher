@@ -58,7 +58,7 @@ namespace filewatcherdll
 	{
 		while (m_running)
 		{
-			auto x = std::chrono::steady_clock::now() + std::chrono::milliseconds(1000);
+			auto x = std::chrono::steady_clock::now() + std::chrono::milliseconds(250);
 			check_files();
 			std::this_thread::sleep_until(x);
 		}
@@ -101,6 +101,12 @@ namespace filewatcherdll
 			strncpy_s(file.last_write, lastWriteLen + 1, formattedFileTime.c_str(), lastWriteLen);
 
 			files.push_back(file);
+		}
+
+		if (files.empty()) 
+		{
+			m_ui_callback(nullptr, 0);
+			return;
 		}
 
 		m_ui_callback(&files.front(), files.size());

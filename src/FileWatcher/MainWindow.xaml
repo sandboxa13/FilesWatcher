@@ -98,6 +98,7 @@
         <Grid Grid.Row="3">
             <ListView ScrollViewer.VerticalScrollBarVisibility="Visible"
                       ScrollViewer.CanContentScroll="True"
+                      VirtualizingPanel.IsVirtualizing="True"
                       Margin="10"
                       BorderThickness="0"
                       Width="Auto"

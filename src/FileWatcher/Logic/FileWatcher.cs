@@ -58,7 +58,12 @@ namespace FileWatcher.Logic
         private void FilesUpdateHandler(IntPtr files, int count)
         {
             if (count == 0)
+            {
+                _filesCache.Clear();
+                _filesUpdatedSubject.OnNext(_filesCache.Values.ToArray());
+
                 return;
+            }
 
             FileModel[] newFiles = new FileModel[count];
 
