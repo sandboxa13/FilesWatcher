@@ -21,6 +21,7 @@
             <Setter Property="MinWidth" Value="200"/>
             <Setter Property="Width" Value="Auto"/>
             <Setter Property="Margin" Value="5"/>
+            <Setter Property="Height" Value="Auto"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Text" Value="{Binding CurrentPath}"/>
@@ -28,7 +29,7 @@
 
         <Style TargetType="{x:Type Button}" x:Key="Button.OpenFolder.Style" >
             <Setter Property="Margin" Value="10"/>
-            <Setter Property="Content" Value="Open"/>
+            <Setter Property="Content" Value="..."/>
             <Setter Property="Command" Value="{Binding OpenFolderSelectWindowCommand}"/>
         </Style>
 
@@ -47,7 +48,6 @@
         <Style TargetType="{x:Type Border}" x:Key="Border.CurrentPath.Style" >
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="BorderBrush" Value="Gray"/>
-            <Setter Property="Height" Value="Auto"/>
         </Style>
 
         <Style x:Key="ListView.Files.Style" TargetType="{x:Type GridViewColumnHeader}">
@@ -82,12 +82,17 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" Orientation="Horizontal" >
-                <Border Style="{StaticResource Border.CurrentPath.Style}">
+            <Grid Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <Border Style="{StaticResource Border.CurrentPath.Style}" Height="24">
                     <TextBlock Style="{StaticResource TextBlock.CurrentPath.Style}"/>
                 </Border>
-                <Button Style="{StaticResource Button.OpenFolder.Style}" />
-            </StackPanel>
+                <Button Grid.Column="1" Width="24" Height="24" Style="{StaticResource Button.OpenFolder.Style}" />
+            </Grid>
 
             <Button Grid.Column="1" Style="{StaticResource Button.RunAsAdmin.Style}"/>
         </Grid>
