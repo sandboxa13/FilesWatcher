@@ -7,10 +7,10 @@ namespace FileWatcher.Domain
     internal struct FileModel
     {
         public FileModel(string name,
-                    string path,
-                    string lastWriteTime,
-                    int size,
-                    bool isDirectory)
+                         string path,
+                         string lastWriteTime,
+                         int size,
+                         bool isDirectory)
         {
             Name = name;
             Path = path;

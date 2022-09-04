@@ -61,6 +61,10 @@
                 </TextBlock.InputBindings>
             </TextBlock>
         </DataTemplate>
+
+        <Style TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -98,39 +102,12 @@
                       ItemsSource="{Binding Files}"
                       HorizontalAlignment="Left"
                       HorizontalContentAlignment="Left">
-                <!--<ListView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Vertical"/>
-                    </ItemsPanelTemplate>
-                </ListView.ItemsPanel>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Margin="2">
-                            <Grid.InputBindings>
-                                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding DoubleClickCommand}"/>
-                            </Grid.InputBindings>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            --><!--<Image Source="..\images\48.png" Width="48" Height="48"/>--><!--
-                            <TextBlock Grid.Column="0" Text="{Binding Name}" />
-                            <TextBlock Grid.Column="1" Text="{Binding Path}" />
-                            <TextBlock Grid.Column="2" Text="{Binding Size}" />
-                            <TextBlock Grid.Column="3" Text="{Binding LastWriteTime}" />
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>-->
-
                 <ListView.View>
-                    <GridView >
-                       
-                        <GridViewColumn Header="Name" Width="auto">
+                    <GridView>
+                        <GridViewColumn Header="Name" Width="Auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Name}">
+                                    <TextBlock TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding Name}" Width="Auto">
                                         <TextBlock.InputBindings>
                                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DoubleClickCommand}" />
                                         </TextBlock.InputBindings>
@@ -139,10 +116,34 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
 
-                        <GridViewColumn Header="Path" Width="auto">
+                        <GridViewColumn Header="Path" Width="Auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Path}">
+                                    <TextBlock HorizontalAlignment="Stretch" TextAlignment="Left" Text="{Binding Path}" Width="Auto">
+                                        <TextBlock.InputBindings>
+                                            <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DoubleClickCommand}" />
+                                        </TextBlock.InputBindings>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn Header="Size" Width="Auto">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding Size}" Width="Auto">
+                                        <TextBlock.InputBindings>
+                                            <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DoubleClickCommand}" />
+                                        </TextBlock.InputBindings>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn Header="Date" Width="Auto">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding LastWriteTime}" Width="Auto">
                                         <TextBlock.InputBindings>
                                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DoubleClickCommand}" />
                                         </TextBlock.InputBindings>

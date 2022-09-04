@@ -11,9 +11,8 @@ namespace FileWatcher.Logic
     internal class FilesWatcher
     {
         private readonly ISubject<FileModel[]> _filesUpdatedSubject;
-        private readonly Dictionary<string, FileModel> _filesDic;
+        private readonly Dictionary<string, FileModel> _filesCache;
 
-        //private FileModel[] _files;
         private IntPtr _fileWatcherPtr;
         private FilesUpdateDelegate _filesUpdateCallback;
 
@@ -23,7 +22,7 @@ namespace FileWatcher.Logic
             _filesUpdatedSubject = new Subject<FileModel[]>();
 
             _fileWatcherPtr = FileWatcherInterop.create_file_watcher(_filesUpdateCallback);
-            _filesDic = new Dictionary<string, FileModel>(); 
+            _filesCache = new Dictionary<string, FileModel>(); 
         }
 
         public string CurrentPath { get; private set; }
@@ -70,14 +69,14 @@ namespace FileWatcher.Logic
 
             if (needUpdate)
             {
-                _filesDic.Clear();
+                _filesCache.Clear();
 
                 foreach (var newFiile in newFiles)
                 {
-                    _filesDic.Add(newFiile.Name, newFiile);
+                    _filesCache.Add(newFiile.Name, newFiile);
                 }
 
-                _filesUpdatedSubject.OnNext(_filesDic.Values.ToArray());
+                _filesUpdatedSubject.OnNext(_filesCache.Values.ToArray());
             }
         }
 
@@ -90,7 +89,7 @@ namespace FileWatcher.Logic
                 if (needUpdate)
                     return needUpdate;
 
-                var hasValue = _filesDic.TryGetValue(newFile.Name, out var oldFile);
+                var hasValue = _filesCache.TryGetValue(newFile.Name, out var oldFile);
 
                 if(!hasValue)
                     needUpdate = true;

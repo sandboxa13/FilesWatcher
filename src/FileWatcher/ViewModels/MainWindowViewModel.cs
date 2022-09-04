@@ -8,6 +8,7 @@ using System.Reactive.Disposables;
 using FileWatcher.Logic;
 using FileWatcher.ViewModels.Commands;
 using FileWatcher.Domain;
+using System.IO;
 
 namespace FileWatcher.ViewModels
 {
@@ -18,17 +19,18 @@ namespace FileWatcher.ViewModels
 
         private string _currentPath;
         private bool _isAdmin;
-        private ObservableCollection<FileViewModel> _files = new();
+        private ObservableCollection<FileViewModel> _files;
 
         public MainWindowViewModel(FileSystem fileSystem)
         {
             _fileSystem = fileSystem;
 
-
             OpenFolderSelectWindowCommand = new RelayCommand(o => { OpenFolderSelectWindowHandler(); }, o => true);
             RunAsAdminCommand = new RelayCommand(obj => { RunAsAdminHandler(); }, o => !IsAdmin);
 
             IsAdmin = _fileSystem.IsUserAdmin();
+
+            _files = new();
 
             _disposables.Add(_fileSystem.FilesUpdated.Subscribe(OnFilesChanged));
             _disposables.Add(_fileSystem.DirectoryChanged.Subscribe(OnDirectoryChanged));
@@ -90,9 +92,23 @@ namespace FileWatcher.ViewModels
         {
             System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
-                Files.Clear();
+                var sortedFiles = files.OrderBy(f => f.IsDirectory ? 0 : 1);
 
-                Files = new ObservableCollection<FileViewModel>(files.Select(file => new FileViewModel(_fileSystem, file)));
+                Files.Clear();
+                
+                var parrentDirectory = Directory.GetParent(_fileSystem.CurrentDirectory);
+                
+                if(parrentDirectory != null)
+                {
+                    var root = new FileModel(parrentDirectory.Name, parrentDirectory.FullName, "", 0, true);
+
+                    Files.Add(new FileViewModel(_fileSystem, root));
+                }
+                
+                foreach (var file in sortedFiles)
+                {
+                    Files.Add(new FileViewModel(_fileSystem, file));
+                }
             }));
         }
 
