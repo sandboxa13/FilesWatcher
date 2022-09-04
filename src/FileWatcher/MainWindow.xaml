@@ -4,12 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:viewmodels="clr-namespace:FileWatcher.ViewModels" 
-        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Closing="Window_Closing"
         StateChanged="Window_StateChanged"
         d:DataContext="{d:DesignInstance viewmodels:MainWindowViewModel}" 
         Title="File Watcher" MinHeight="450" MinWidth="800" Height="450" Width="800">
+
     <Window.Resources>
         <ContextMenu x:Key="NotifierContextMenu"
                      Placement="MousePoint">
@@ -57,19 +57,19 @@
         <DataTemplate x:Key="GridViewCellTemplateStyle">
             <TextBlock Text="{Binding}">
                 <TextBlock.InputBindings>
-                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding DoubleClickCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"/>
+                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DoubleClickCommand}" />
                 </TextBlock.InputBindings>
             </TextBlock>
         </DataTemplate>
     </Window.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        
+
         <!-- Folder select and Run As Admin-->
         <Grid Grid.Row="0" Margin="10">
             <Grid.ColumnDefinitions>
@@ -91,12 +91,43 @@
 
         <!-- Files-->
         <Grid Grid.Row="2">
-            <ListView VirtualizingPanel.IsVirtualizing="True" Margin="10" ItemsSource="{Binding Files}" HorizontalAlignment="Left" HorizontalContentAlignment="Left">
+            <ListView ScrollViewer.VerticalScrollBarVisibility="Visible"
+                      ScrollViewer.CanContentScroll="True"
+                      VirtualizingPanel.IsVirtualizing="True"
+                      Margin="10"
+                      ItemsSource="{Binding Files}"
+                      HorizontalAlignment="Left"
+                      HorizontalContentAlignment="Left">
+                <!--<ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="2">
+                            <Grid.InputBindings>
+                                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding DoubleClickCommand}"/>
+                            </Grid.InputBindings>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            --><!--<Image Source="..\images\48.png" Width="48" Height="48"/>--><!--
+                            <TextBlock Grid.Column="0" Text="{Binding Name}" />
+                            <TextBlock Grid.Column="1" Text="{Binding Path}" />
+                            <TextBlock Grid.Column="2" Text="{Binding Size}" />
+                            <TextBlock Grid.Column="3" Text="{Binding LastWriteTime}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>-->
+
                 <ListView.View>
                     <GridView >
-                        <!--<GridViewColumn Width="Auto" Header="Name" CellTemplate="{StaticResource GridViewCellTemplateStyle}"/>-->
-
-                        <GridViewColumn Header="Name" Width="auto"  >
+                       
+                        <GridViewColumn Header="Name" Width="auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Name}">
@@ -108,20 +139,17 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
 
-                        <!--<GridViewColumn Header="Name" Width="Auto" >
+                        <GridViewColumn Header="Path" Width="auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Name}">
+                                    <TextBlock Text="{Binding Path}">
                                         <TextBlock.InputBindings>
-                                            <MouseBinding Gesture="LeftDoubleClick" Command="{Binding DoubleClickCommand}"/>
+                                            <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DoubleClickCommand}" />
                                         </TextBlock.InputBindings>
                                     </TextBlock>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn HeaderContainerStyle="{StaticResource ListView.Files.Style}" Header="Path" Width="Auto" DisplayMemberBinding="{Binding Path}" />
-                        <GridViewColumn HeaderContainerStyle="{StaticResource ListView.Files.Style}" Header="Size" Width="Auto" DisplayMemberBinding="{Binding Size}" />
-                        <GridViewColumn HeaderContainerStyle="{StaticResource ListView.Files.Style}" Header="Last change" Width="Auto" DisplayMemberBinding="{Binding LastWriteTime}" />-->
                     </GridView>
                 </ListView.View>
             </ListView>

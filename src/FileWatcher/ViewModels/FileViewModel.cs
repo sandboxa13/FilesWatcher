@@ -27,15 +27,15 @@ namespace FileWatcher.ViewModels
                 return _file.Name;
             }
         }
-        public int Size
+        public string Size
         {
             get
             {
                 if (_file.IsDirectory)
                 {
-                    return 0;
+                    return "Folder";
                 }
-                return _file.Size;
+                return _file.Size.ToString();
             }
         }
         public string Path

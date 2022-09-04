@@ -26,14 +26,10 @@ namespace FileWatcher.Logic
         public string CurrentDirectory => _filesWatcher.CurrentPath;
         public IObservable<FileModel[]> FilesUpdated => _filesWatcher.FilesUpdated;
         public IObservable<string> DirectoryChanged => _directoryChangedSubjet;
-
+        
         public void RunAsAdmin() => _permissionsElevator.RunAsAdmin();
         public bool IsUserAdmin() => _permissionsChecker.IsAdmin;
-
-        public void Dispose()
-        {
-            _filesWatcher.Dispose();
-        }
+        public void Dispose() => _filesWatcher.Dispose();
 
         public void ObserveDirectory(string path)
         {
@@ -63,7 +59,7 @@ namespace FileWatcher.Logic
                     {
                         Process.Start("explorer.exe", file.Path);
                     }
-                });
+                }).ConfigureAwait(false);
             }
         }
     }

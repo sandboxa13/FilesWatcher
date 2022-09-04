@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Subjects;
 using System.Runtime.InteropServices;
 using FileWatcher.Domain;
@@ -9,8 +11,9 @@ namespace FileWatcher.Logic
     internal class FilesWatcher
     {
         private readonly ISubject<FileModel[]> _filesUpdatedSubject;
+        private readonly Dictionary<string, FileModel> _filesDic;
 
-        private FileModel[] _files;
+        //private FileModel[] _files;
         private IntPtr _fileWatcherPtr;
         private FilesUpdateDelegate _filesUpdateCallback;
 
@@ -20,6 +23,7 @@ namespace FileWatcher.Logic
             _filesUpdatedSubject = new Subject<FileModel[]>();
 
             _fileWatcherPtr = FileWatcherInterop.create_file_watcher(_filesUpdateCallback);
+            _filesDic = new Dictionary<string, FileModel>(); 
         }
 
         public string CurrentPath { get; private set; }
@@ -57,13 +61,51 @@ namespace FileWatcher.Logic
             if (count == 0)
                 return;
 
-            if (_files == null || _files.Length != count)
-                _files = new FileModel[count];
+            FileModel[] newFiles = new FileModel[count];
 
             for (int i = 0; i < count; i++)
-                _files[i] = (FileModel)Marshal.PtrToStructure(files + i * Marshal.SizeOf<FileModel>(), typeof(FileModel));
+                newFiles[i] = (FileModel)Marshal.PtrToStructure(files + i * Marshal.SizeOf<FileModel>(), typeof(FileModel));
 
-            _filesUpdatedSubject.OnNext(_files);
+            var needUpdate = CheckNewFiles(newFiles);
+
+            if (needUpdate)
+            {
+                _filesDic.Clear();
+
+                foreach (var newFiile in newFiles)
+                {
+                    _filesDic.Add(newFiile.Name, newFiile);
+                }
+
+                _filesUpdatedSubject.OnNext(_filesDic.Values.ToArray());
+            }
+        }
+
+        private bool CheckNewFiles(FileModel[] newFiles)
+        {
+            bool needUpdate = false;
+
+            foreach (var newFile in newFiles)
+            {
+                if (needUpdate)
+                    return needUpdate;
+
+                var hasValue = _filesDic.TryGetValue(newFile.Name, out var oldFile);
+
+                if(!hasValue)
+                    needUpdate = true;
+
+                if (oldFile.Equals(newFile))
+                {
+                    continue;
+                }
+                else
+                {
+                    needUpdate = true;
+                }
+            }
+
+            return needUpdate;
         }
     }
 }
