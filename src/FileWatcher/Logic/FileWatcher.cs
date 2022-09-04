@@ -67,6 +67,9 @@ namespace FileWatcher.Logic
 
             var needUpdate = CheckNewFiles(newFiles);
 
+            if(count != _filesCache.Values.Count)
+                needUpdate = true;
+
             if (needUpdate)
             {
                 _filesCache.Clear();

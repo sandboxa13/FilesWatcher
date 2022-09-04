@@ -100,7 +100,7 @@ namespace FileWatcher.ViewModels
                 
                 if(parrentDirectory != null)
                 {
-                    var root = new FileModel(parrentDirectory.Name, parrentDirectory.FullName, "", 0, true);
+                    var root = new FileModel("...", parrentDirectory.FullName, "", 0, true);
 
                     Files.Add(new FileViewModel(_fileSystem, root));
                 }

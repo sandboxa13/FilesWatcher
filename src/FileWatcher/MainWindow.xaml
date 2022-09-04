@@ -8,7 +8,7 @@
         Closing="Window_Closing"
         StateChanged="Window_StateChanged"
         d:DataContext="{d:DesignInstance viewmodels:MainWindowViewModel}" 
-        Title="File Watcher" MinHeight="450" MinWidth="800" Height="450" Width="800">
+        Title="File Watcher" MinHeight="450" MinWidth="500" Height="450" Width="800">
 
     <Window.Resources>
         <ContextMenu x:Key="NotifierContextMenu"
@@ -99,6 +99,7 @@
                       ScrollViewer.CanContentScroll="True"
                       VirtualizingPanel.IsVirtualizing="True"
                       Margin="10"
+                      Width="Auto"
                       ItemsSource="{Binding Files}"
                       HorizontalAlignment="Left"
                       HorizontalContentAlignment="Left">
@@ -107,7 +108,7 @@
                         <GridViewColumn Header="Name" Width="Auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding Name}" Width="Auto">
+                                    <TextBlock Height="32" VerticalAlignment="Center" TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding Name}" Width="Auto">
                                         <TextBlock.InputBindings>
                                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DoubleClickCommand}" />
                                         </TextBlock.InputBindings>
@@ -119,7 +120,7 @@
                         <GridViewColumn Header="Path" Width="Auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock HorizontalAlignment="Stretch" TextAlignment="Left" Text="{Binding Path}" Width="Auto">
+                                    <TextBlock Height="32" HorizontalAlignment="Stretch" TextAlignment="Left" Text="{Binding Path}" Width="Auto">
                                         <TextBlock.InputBindings>
                                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DoubleClickCommand}" />
                                         </TextBlock.InputBindings>
@@ -131,7 +132,7 @@
                         <GridViewColumn Header="Size" Width="Auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding Size}" Width="Auto">
+                                    <TextBlock Height="32" TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding Size}" Width="Auto">
                                         <TextBlock.InputBindings>
                                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DoubleClickCommand}" />
                                         </TextBlock.InputBindings>
@@ -143,7 +144,7 @@
                         <GridViewColumn Header="Date" Width="Auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding LastWriteTime}" Width="Auto">
+                                    <TextBlock Height="32" TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding LastWriteTime}" Width="Auto">
                                         <TextBlock.InputBindings>
                                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DoubleClickCommand}" />
                                         </TextBlock.InputBindings>
