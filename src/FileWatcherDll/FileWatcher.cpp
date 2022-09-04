@@ -2,14 +2,24 @@
 
 namespace filewatcherdll
 {
-	IFileWatcher* create_file_watcher(ui_callback callback, wchar_t* path)
+	IFileWatcher* create_file_watcher(ui_callback callback)
 	{
-		return new file_watcher(callback, path);
+		return new file_watcher(callback);
+	}
+
+	void observe(IFileWatcher* ptr, wchar_t* path)
+	{
+		ptr->observe(path);
+	}
+
+	void stop(IFileWatcher* ptr)
+	{
+		ptr->stop_observe();
 	}
 
 	void dispose_file_watcher(IFileWatcher* ptr)
 	{
-		ptr->stop();
+		ptr->stop_observe();
 
 		delete ptr;
 	}
@@ -23,11 +33,25 @@ namespace filewatcherdll
 		return system_clock::to_time_t(sctp);
 	}
 
-
-	void file_watcher::stop() 
+	void file_watcher::stop_observe()
 	{
 		m_running = false;
-		m_timer_thread.join();
+	}
+
+	void file_watcher::observe(wchar_t* path)
+	{
+		int pathLen = std::wcslen(path);
+		m_path = new wchar_t[pathLen + 1];
+		wcsncpy_s(m_path, pathLen + 1, path, pathLen);
+	
+		if (m_timer_thread.joinable())
+		{
+			m_timer_thread.join();
+		}
+
+		m_running = true;
+
+		m_timer_thread = std::thread(&file_watcher::threadFunction, this);
 	}
 
 	void file_watcher::threadFunction()
@@ -38,12 +62,6 @@ namespace filewatcherdll
 			check_files();
 			std::this_thread::sleep_until(x);
 		}
-	}
-
-	void file_watcher::timer_start()
-	{
-		m_running = true;
-		m_timer_thread = std::thread(&file_watcher::threadFunction,this);
 	}
 
 	void file_watcher::check_files()

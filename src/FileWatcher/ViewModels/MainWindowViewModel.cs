@@ -2,40 +2,36 @@
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Reactive.Linq;
-using FileWatcher.Logic;
-using FileWatcher.ViewModels.Commands;
-using FileWatcher.Domain;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Disposables;
-using System.Windows;
+using FileWatcher.Logic;
+using FileWatcher.ViewModels.Commands;
+using FileWatcher.Domain;
 
 namespace FileWatcher.ViewModels
 {
     internal class MainWindowViewModel : ViewModelBase
     {
-        private readonly PermissionsElevator _permissionsElevator;
-        private readonly FilesWatcher _filesWatcher;
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
+        private readonly FileSystem _fileSystem;
 
         private string _currentPath;
         private bool _isAdmin;
         private ObservableCollection<FileViewModel> _files = new();
 
-        public MainWindowViewModel(
-            PermissionsChecker permissionsChecker,
-            PermissionsElevator permissionsElevator,
-            FilesWatcher filesWatcher)
+        public MainWindowViewModel(FileSystem fileSystem)
         {
-            _permissionsElevator = permissionsElevator;
-            _filesWatcher = filesWatcher;
+            _fileSystem = fileSystem;
+
 
             OpenFolderSelectWindowCommand = new RelayCommand(o => { OpenFolderSelectWindowHandler(); }, o => true);
             RunAsAdminCommand = new RelayCommand(obj => { RunAsAdminHandler(); }, o => !IsAdmin);
 
-            IsAdmin = permissionsChecker.IsAdmin;
+            IsAdmin = _fileSystem.IsUserAdmin();
 
-            _disposables.Add(_filesWatcher.FilesChanged.Subscribe(OnFilesChanged));
+            _disposables.Add(_fileSystem.FilesUpdated.Subscribe(OnFilesChanged));
+            _disposables.Add(_fileSystem.DirectoryChanged.Subscribe(OnDirectoryChanged));
         }
 
         public ICommand OpenFolderSelectWindowCommand { get; set; }
@@ -45,7 +41,7 @@ namespace FileWatcher.ViewModels
         {
             get
             {
-                return _currentPath;
+                return _fileSystem.CurrentDirectory;
             }
             set
             {
@@ -71,7 +67,6 @@ namespace FileWatcher.ViewModels
                 }
             }
         }
-
         public ObservableCollection<FileViewModel> Files
         {
             get => _files;
@@ -87,7 +82,7 @@ namespace FileWatcher.ViewModels
 
         public override void Dispose()
         {
-            _filesWatcher.Dispose();
+            _fileSystem.Dispose();
             _disposables.Dispose();
         }
 
@@ -97,8 +92,13 @@ namespace FileWatcher.ViewModels
             {
                 Files.Clear();
 
-                Files = new ObservableCollection<FileViewModel>(files.Select(file => new FileViewModel(file)));
+                Files = new ObservableCollection<FileViewModel>(files.Select(file => new FileViewModel(_fileSystem, file)));
             }));
+        }
+
+        private void OnDirectoryChanged(string path)
+        {
+            CurrentPath = path; 
         }
 
         private void OpenFolderSelectWindowHandler()
@@ -109,9 +109,9 @@ namespace FileWatcher.ViewModels
 
             if (result == DialogResult.OK)
             {
-                CurrentPath = dialog.SelectedPath;
+                _fileSystem.ObserveDirectory(dialog.SelectedPath);
 
-                _filesWatcher.StartWatch(CurrentPath);
+                CurrentPath = _fileSystem.CurrentDirectory;
             }
         }
 
@@ -119,8 +119,8 @@ namespace FileWatcher.ViewModels
         {
             if (IsAdmin)
                 return;
-            
-            _permissionsElevator.RunAsAdmin();
+
+            _fileSystem.RunAsAdmin();
         }
     }
 }

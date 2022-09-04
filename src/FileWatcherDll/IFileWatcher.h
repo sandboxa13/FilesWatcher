@@ -15,10 +15,12 @@ namespace filewatcherdll
 	class __declspec(dllexport) IFileWatcher 
 	{
 	public:
-		virtual void stop(void) = 0;
+		virtual void stop_observe(void) = 0;
+		virtual void observe(wchar_t* path) = 0;
 	};
 
-	extern "C" __declspec(dllexport) IFileWatcher* create_file_watcher(ui_callback, wchar_t* path);
+	extern "C" __declspec(dllexport) IFileWatcher* create_file_watcher(ui_callback);
 	extern "C" __declspec(dllexport) void dispose_file_watcher(IFileWatcher*);
-
+	extern "C" __declspec(dllexport) void stop(IFileWatcher*);
+	extern "C" __declspec(dllexport) void observe(IFileWatcher*, wchar_t* path);
 }

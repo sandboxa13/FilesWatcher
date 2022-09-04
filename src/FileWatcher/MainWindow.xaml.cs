@@ -16,11 +16,9 @@ namespace FileWatcher
         {
             InitializeComponent();
 
-            var permissionsChecker = new PermissionsChecker();
-            var permissionsElevator = new PermissionsElevator();
-            var filesWatcher = new FilesWatcher();
+            var fileSystem = new FileSystem();
 
-            DataContext = new MainWindowViewModel(permissionsChecker, permissionsElevator, filesWatcher);
+            DataContext = new MainWindowViewModel(fileSystem);
 
             notifier = new System.Windows.Forms.NotifyIcon
             {

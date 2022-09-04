@@ -1,18 +1,18 @@
 ﻿using FileWatcher.Domain;
+using FileWatcher.Logic;
 using FileWatcher.ViewModels.Commands;
-using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace FileWatcher.ViewModels
 {
     internal class FileViewModel : ViewModelBase
     {
+        private readonly FileSystem _fileSystem;
         private readonly FileModel _file;
 
-        public FileViewModel(FileModel file)
+        public FileViewModel(FileSystem fileSystem, FileModel file)
         {
+            _fileSystem = fileSystem;
             _file = file;
 
             DoubleClickCommand = new RelayCommand(o => { DoubleClickHandler(); }, o => true);
@@ -54,15 +54,9 @@ namespace FileWatcher.ViewModels
             }
         }
 
-        private Task DoubleClickHandler()
+        private void DoubleClickHandler()
         {
-            return Task.Run(() => 
-            {
-                if (File.Exists(_file.Path))
-                {
-                    Process.Start("explorer.exe", _file.Path);
-                }
-            });
+            _fileSystem.Open(_file);
         }
     }
 }

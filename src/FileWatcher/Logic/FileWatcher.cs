@@ -8,40 +8,51 @@ namespace FileWatcher.Logic
 {
     internal class FilesWatcher
     {
-        private readonly ISubject<FileModel[]> _filesChangedSubject = new Subject<FileModel[]>();
+        private readonly ISubject<FileModel[]> _filesUpdatedSubject;
 
         private FileModel[] _files;
-        private IntPtr _fileWatcher;
-        private GuiUpdateDelegate _guiUpdateCallback;
+        private IntPtr _fileWatcherPtr;
+        private FilesUpdateDelegate _filesUpdateCallback;
 
         public FilesWatcher()
         {
-            _guiUpdateCallback = new GuiUpdateDelegate(GuiUpdateHandler);
+            _filesUpdateCallback = new FilesUpdateDelegate(FilesUpdateHandler);
+            _filesUpdatedSubject = new Subject<FileModel[]>();
+
+            _fileWatcherPtr = FileWatcherInterop.create_file_watcher(_filesUpdateCallback);
         }
 
         public string CurrentPath { get; private set; }
-        public IObservable<FileModel[]> FilesChanged => _filesChangedSubject;
+        public IObservable<FileModel[]> FilesUpdated => _filesUpdatedSubject;
 
         public void Dispose()
         {
-            FileWatcherInterop.dispose_file_watcher(_fileWatcher);
-            _fileWatcher = IntPtr.Zero;
+            FileWatcherInterop.dispose_file_watcher(_fileWatcherPtr);
+            _fileWatcherPtr = IntPtr.Zero;
         }
 
-        public void StartWatch(string path)
+        public void Stop()
+        {
+            if (_fileWatcherPtr != IntPtr.Zero)
+            {
+                FileWatcherInterop.stop(_fileWatcherPtr);
+            }
+        }
+
+        public void Observe(string path)
         {
             if (string.IsNullOrWhiteSpace(path))
                 return;
 
-            if (_fileWatcher != IntPtr.Zero)
-            {
-                FileWatcherInterop.dispose_file_watcher(_fileWatcher);
-            }
+            CurrentPath = path;
 
-            _fileWatcher = FileWatcherInterop.create_file_watcher(_guiUpdateCallback, path);
+            if (_fileWatcherPtr != IntPtr.Zero)
+            {
+                FileWatcherInterop.observe(_fileWatcherPtr, path);
+            }
         }
 
-        private void GuiUpdateHandler(IntPtr files, int count)
+        private void FilesUpdateHandler(IntPtr files, int count)
         {
             if (count == 0)
                 return;
@@ -52,7 +63,7 @@ namespace FileWatcher.Logic
             for (int i = 0; i < count; i++)
                 _files[i] = (FileModel)Marshal.PtrToStructure(files + i * Marshal.SizeOf<FileModel>(), typeof(FileModel));
 
-            _filesChangedSubject.OnNext(_files);
+            _filesUpdatedSubject.OnNext(_files);
         }
     }
 }
