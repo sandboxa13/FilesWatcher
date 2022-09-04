@@ -30,7 +30,7 @@ namespace FileWatcher.ViewModels
 
             IsAdmin = _fileSystem.IsUserAdmin();
 
-            _files = new();
+            _files = new ObservableCollection<FileViewModel>();
 
             _disposables.Add(_fileSystem.FilesUpdated.Subscribe(OnFilesChanged));
             _disposables.Add(_fileSystem.DirectoryChanged.Subscribe(OnDirectoryChanged));
@@ -119,16 +119,17 @@ namespace FileWatcher.ViewModels
 
         private void OpenFolderSelectWindowHandler()
         {
-            using var dialog = new FolderBrowserDialog();
-
-            var result = dialog.ShowDialog();
-
-            if (result == DialogResult.OK)
+            using (var dialog = new FolderBrowserDialog())
             {
-                _fileSystem.ObserveDirectory(dialog.SelectedPath);
+                var result = dialog.ShowDialog();
 
-                CurrentPath = _fileSystem.CurrentDirectory;
-            }
+                if (result == DialogResult.OK)
+                {
+                    _fileSystem.ObserveDirectory(dialog.SelectedPath);
+
+                    CurrentPath = _fileSystem.CurrentDirectory;
+                }
+            }   
         }
 
         private void RunAsAdminHandler()

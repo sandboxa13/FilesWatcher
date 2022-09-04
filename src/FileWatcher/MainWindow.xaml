@@ -72,6 +72,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- Folder select and Run As Admin-->
@@ -91,24 +92,24 @@
             <Button Grid.Column="1" Style="{StaticResource Button.RunAsAdmin.Style}"/>
         </Grid>
 
-        <Border Grid.Column="1" Style="{StaticResource Border.Separator.Style}"/>
+        <Border Grid.Row="2" Style="{StaticResource Border.Separator.Style}"/>
 
         <!-- Files-->
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="3">
             <ListView ScrollViewer.VerticalScrollBarVisibility="Visible"
                       ScrollViewer.CanContentScroll="True"
-                      VirtualizingPanel.IsVirtualizing="True"
                       Margin="10"
+                      BorderThickness="0"
                       Width="Auto"
                       ItemsSource="{Binding Files}"
-                      HorizontalAlignment="Left"
-                      HorizontalContentAlignment="Left">
+                      HorizontalAlignment="Stretch"
+                      HorizontalContentAlignment="Stretch">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Name" Width="Auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Height="32" VerticalAlignment="Center" TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding Name}" Width="Auto">
+                                    <TextBlock VerticalAlignment="Center" TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding Name}" Width="Auto">
                                         <TextBlock.InputBindings>
                                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DoubleClickCommand}" />
                                         </TextBlock.InputBindings>
@@ -120,7 +121,7 @@
                         <GridViewColumn Header="Path" Width="Auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Height="32" HorizontalAlignment="Stretch" TextAlignment="Left" Text="{Binding Path}" Width="Auto">
+                                    <TextBlock HorizontalAlignment="Stretch" TextAlignment="Left" Text="{Binding Path}" Width="Auto">
                                         <TextBlock.InputBindings>
                                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DoubleClickCommand}" />
                                         </TextBlock.InputBindings>
@@ -132,7 +133,7 @@
                         <GridViewColumn Header="Size" Width="Auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Height="32" TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding Size}" Width="Auto">
+                                    <TextBlock TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding Size}" Width="Auto">
                                         <TextBlock.InputBindings>
                                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DoubleClickCommand}" />
                                         </TextBlock.InputBindings>
@@ -144,7 +145,7 @@
                         <GridViewColumn Header="Date" Width="Auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Height="32" TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding LastWriteTime}" Width="Auto">
+                                    <TextBlock TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding LastWriteTime}" Width="Auto">
                                         <TextBlock.InputBindings>
                                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DoubleClickCommand}" />
                                         </TextBlock.InputBindings>

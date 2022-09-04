@@ -22,7 +22,7 @@ namespace FileWatcher
 
             notifier = new System.Windows.Forms.NotifyIcon
             {
-                Icon = new System.Drawing.Icon("../../src/FileWatcher/Resources/icon.ico"),
+                Icon = new System.Drawing.Icon("Resources/icon.ico"),
                 Visible = true
             };
             notifier.MouseDown += Notifier_MouseDown;

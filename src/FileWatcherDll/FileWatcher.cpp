@@ -58,7 +58,7 @@ namespace filewatcherdll
 	{
 		while (m_running)
 		{
-			auto x = std::chrono::steady_clock::now() + std::chrono::milliseconds(500);
+			auto x = std::chrono::steady_clock::now() + std::chrono::milliseconds(1000);
 			check_files();
 			std::this_thread::sleep_until(x);
 		}
@@ -67,6 +67,9 @@ namespace filewatcherdll
 	void file_watcher::check_files()
 	{
 		std::vector<file> files{};
+
+		if (m_path == nullptr)
+			return;
 
 		for (const auto& entry : std::filesystem::directory_iterator(m_path))
 		{
