@@ -19,6 +19,7 @@ namespace FileWatcher.ViewModels
 
         private string _currentPath;
         private bool _isAdmin;
+        private bool _hasItems;
         private ObservableCollection<FileViewModel> _files;
 
         public MainWindowViewModel(FileSystem fileSystem)
@@ -81,6 +82,21 @@ namespace FileWatcher.ViewModels
                 }
             }
         }
+        public bool HasItems
+        {
+            get
+            {
+                return _hasItems;
+            }
+            set
+            {
+                if (value != _hasItems)
+                {
+                    _hasItems = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         public override void Dispose()
         {
@@ -109,6 +125,8 @@ namespace FileWatcher.ViewModels
                 {
                     Files.Add(new FileViewModel(_fileSystem, file));
                 }
+
+                HasItems = Files.Any();
             }));
         }
 

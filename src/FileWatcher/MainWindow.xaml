@@ -4,13 +4,84 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:viewmodels="clr-namespace:FileWatcher.ViewModels" 
+        xmlns:converters="clr-namespace:FileWatcher.Converters"
         mc:Ignorable="d"
         Closing="Window_Closing"
-        StateChanged="Window_StateChanged"
         d:DataContext="{d:DesignInstance viewmodels:MainWindowViewModel}" 
         Title="File Watcher" MinHeight="450" MinWidth="500" Height="450" Width="800">
 
     <Window.Resources>
+
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+
+        <SolidColorBrush x:Key="Button.Brushes.FilledGreen.Foreground" Color="Black" />
+        <SolidColorBrush x:Key="Button.Brushes.FilledGreen.Background" Color="#ACD1C4" />
+        <SolidColorBrush x:Key="Button.Brushes.FilledGreen.Disabled.Foreground" Color="#6F6F6F" />
+        <SolidColorBrush x:Key="Button.Brushes.FilledGreen.Disabled.Background" Color="#DFDFDF" />
+        <SolidColorBrush x:Key="Button.Brushes.FilledGreen.MouseOver.Foreground" Color="#F8FCFB" />
+        <SolidColorBrush x:Key="Button.Brushes.FilledGreen.MouseOver.Background" Color="#2CAA79" />
+
+        <Style x:Key="Button.Styles.FilledBase" TargetType="{x:Type Button}">
+            <Setter Property="Border.CornerRadius" Value="1" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontFamily" Value="Arial" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="FontStretch" Value="Normal" />
+            <Setter Property="FontStyle" Value="Normal" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="MinHeight" Value="32" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Width="{TemplateBinding Width}"
+                                Height="{TemplateBinding Height}"
+                                Padding="{TemplateBinding Padding}"
+                                HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding Border.CornerRadius}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              Content="{TemplateBinding Content}"
+                                              IsEnabled="{TemplateBinding IsEnabled}"
+                                              TextElement.FontFamily="{TemplateBinding FontFamily}"
+                                              TextElement.FontSize="{TemplateBinding FontSize}"
+                                              TextElement.FontStretch="{TemplateBinding FontStretch}"
+                                              TextElement.FontWeight="{TemplateBinding FontWeight}"
+                                              TextElement.Foreground="{TemplateBinding Foreground}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="TextBlock.LineHeight" Value="2.4" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Cursor" Value="Hand" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+       
+        <Style x:Key="Button.Styles.FilledGreen" BasedOn="{StaticResource Button.Styles.FilledBase}" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="{DynamicResource Button.Brushes.FilledGreen.Background}" />
+            <Setter Property="Foreground" Value="{DynamicResource Button.Brushes.FilledGreen.Foreground}" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource Button.Brushes.FilledGreen.MouseOver.Background}" />
+                    <Setter Property="Foreground" Value="{DynamicResource Button.Brushes.FilledGreen.MouseOver.Foreground}" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="{DynamicResource Button.Brushes.FilledGreen.Disabled.Background}" />
+                    <Setter Property="Foreground" Value="{DynamicResource Button.Brushes.FilledGreen.Disabled.Foreground}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <ContextMenu x:Key="NotifierContextMenu"
                      Placement="MousePoint">
             <MenuItem Header="Show" Click="Menu_Show"/>
@@ -27,17 +98,20 @@
             <Setter Property="Text" Value="{Binding CurrentPath}"/>
         </Style>
 
-        <Style TargetType="{x:Type Button}" x:Key="Button.OpenFolder.Style" >
-            <Setter Property="Margin" Value="10"/>
+        <Style TargetType="{x:Type Button}" x:Key="Button.OpenFolder.Style" BasedOn="{StaticResource Button.Styles.FilledGreen}" >
+            <Setter Property="Margin" Value="5, 0, 0, 0"/>
             <Setter Property="Content" Value="..."/>
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="Command" Value="{Binding OpenFolderSelectWindowCommand}"/>
         </Style>
 
-        <Style TargetType="{x:Type Button}" x:Key="Button.RunAsAdmin.Style" >
-            <Setter Property="Margin" Value="10"/>
-            <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Style TargetType="{x:Type Button}" x:Key="Button.RunAsAdmin.Style" BasedOn="{StaticResource Button.Styles.FilledGreen}" >
             <Setter Property="Content" Value="Run as admin"/>
             <Setter Property="Command" Value="{Binding RunAsAdminCommand}"/>
+            <Setter Property="Width" Value="85"/>
+            <Setter Property="Height" Value="24"/>
         </Style>
 
         <Style TargetType="{x:Type Border}" x:Key="Border.Separator.Style" >
@@ -48,22 +122,16 @@
         <Style TargetType="{x:Type Border}" x:Key="Border.CurrentPath.Style" >
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="BorderBrush" Value="Gray"/>
+            <Setter Property="Height" Value="24"/>
         </Style>
 
         <Style x:Key="ListView.Files.Style" TargetType="{x:Type GridViewColumnHeader}">
             <Setter Property="HorizontalContentAlignment" Value="Left" />
         </Style>
 
-        <DataTemplate x:Key="GridViewCellTemplateStyle">
-            <TextBlock Text="{Binding}">
-                <TextBlock.InputBindings>
-                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DoubleClickCommand}" />
-                </TextBlock.InputBindings>
-            </TextBlock>
-        </DataTemplate>
-
         <Style TargetType="ListViewItem">
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Height" Value="32" />
         </Style>
     </Window.Resources>
 
@@ -87,14 +155,18 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                
-                <Border Style="{StaticResource Border.CurrentPath.Style}" Height="24">
+
+                <Border Style="{StaticResource Border.CurrentPath.Style}">
                     <TextBlock Style="{StaticResource TextBlock.CurrentPath.Style}"/>
                 </Border>
-                <Button Grid.Column="1" Width="24" Height="24" Style="{StaticResource Button.OpenFolder.Style}" />
+                
+                <Button Grid.Column="1" 
+                        Style="{StaticResource Button.OpenFolder.Style}"/>
             </Grid>
 
-            <Button Grid.Column="1" Style="{StaticResource Button.RunAsAdmin.Style}"/>
+            <Button Grid.Column="1"
+                    Content="Run as admin"
+                    Style="{StaticResource Button.RunAsAdmin.Style}"/>
         </Grid>
 
         <Border Grid.Row="2" Style="{StaticResource Border.Separator.Style}"/>
@@ -107,6 +179,7 @@
                       Margin="10"
                       BorderThickness="0"
                       Width="Auto"
+                      Visibility="{Binding HasItems, Converter={StaticResource BoolToVisibilityConverter}}"
                       ItemsSource="{Binding Files}"
                       HorizontalAlignment="Stretch"
                       HorizontalContentAlignment="Stretch">
@@ -115,7 +188,7 @@
                         <GridViewColumn Header="Name" Width="Auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock VerticalAlignment="Center" TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding Name}" Width="Auto">
+                                    <TextBlock VerticalAlignment="Center" TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding Name}" Width="150">
                                         <TextBlock.InputBindings>
                                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DoubleClickCommand}" />
                                         </TextBlock.InputBindings>
@@ -127,7 +200,7 @@
                         <GridViewColumn Header="Path" Width="Auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock HorizontalAlignment="Stretch" TextAlignment="Left" Text="{Binding Path}" Width="Auto">
+                                    <TextBlock HorizontalAlignment="Stretch" TextAlignment="Left" Text="{Binding Path}" Width="300">
                                         <TextBlock.InputBindings>
                                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DoubleClickCommand}" />
                                         </TextBlock.InputBindings>
@@ -139,7 +212,7 @@
                         <GridViewColumn Header="Size" Width="Auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding Size}" Width="Auto">
+                                    <TextBlock TextAlignment="Center" HorizontalAlignment="Stretch" Text="{Binding Size}" Width="100">
                                         <TextBlock.InputBindings>
                                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=DoubleClickCommand}" />
                                         </TextBlock.InputBindings>

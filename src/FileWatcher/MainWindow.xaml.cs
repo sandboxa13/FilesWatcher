@@ -38,12 +38,6 @@ namespace FileWatcher
             }
         }
 
-        private void Window_StateChanged(object sender, System.EventArgs e)
-        {
-            if (WindowState == WindowState.Minimized)
-                this.Hide();
-        }
-
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             this.Hide();

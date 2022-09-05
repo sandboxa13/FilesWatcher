@@ -65,7 +65,7 @@ namespace FileWatcher.Logic
                 return;
             }
 
-            FileModel[] newFiles = new FileModel[count];
+            var newFiles = new FileModel[count];
 
             for (int i = 0; i < count; i++)
                 newFiles[i] = (FileModel)Marshal.PtrToStructure(files + i * Marshal.SizeOf<FileModel>(), typeof(FileModel));
